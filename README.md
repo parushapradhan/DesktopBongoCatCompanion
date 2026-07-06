@@ -238,26 +238,6 @@ use, since it hooks the shell itself rather than watching a window.
          (bongo cat animation)             (bongo cat animation)
 ```
 
-## Known limitations / good next steps
-
-- **Mobile notifications only fire while the app/tab is open.** True
-  background push (phone locked, app closed) needs a push backend —
-  Firebase Cloud Messaging is the natural next step if you want that.
-- **The local webhook only reaches the desktop machine it runs on.** If you
-  want a remote CI pipeline to trigger it, you'd point the webhook call at
-  the Firebase `events` node directly instead of localhost.
-- **Unsigned installer** — `electron-builder` produces a real `.dmg`/`.exe`
-  (see "Packaging it for your partner"), but it isn't code-signed or
-  notarized, so macOS/Windows show a one-time "unknown developer" warning.
-  Fine for sharing between two people; a paid developer account would remove
-  the warning if this ever goes wider.
-- **App icon** is the bongo cat artwork itself (`desktop-app/assets/app-icon.png`,
-  1024×1024) rendered on a dark background so it reads as a real Dock/taskbar
-  icon. Swap that file for anything else you'd rather use before running
-  `npm run dist:*`.
-- **Automatic terminal detection is macOS-only** — Windows/Linux support
-  would need a different frontmost-window check per platform.
-
 ## Contributing
 
 Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for dev
