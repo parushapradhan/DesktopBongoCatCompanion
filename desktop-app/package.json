@@ -23,12 +23,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/bongo-buddy.git"
+    "url": "git+https://github.com/parushapradhan/DesktopBongoCatCompanion.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/bongo-buddy/issues"
+    "url": "https://github.com/parushapradhan/DesktopBongoCatCompanion/issues"
   },
-  "homepage": "https://github.com/your-username/bongo-buddy#readme",
+  "homepage": "https://github.com/parushapradhan/DesktopBongoCatCompanion#readme",
   "dependencies": {
     "express": "^4.19.2",
     "uiohook-napi": "^1.5.4"
