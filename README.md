@@ -3,6 +3,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
+<p align="center">
+  <img src="docs/bongo-cat-demo.svg" alt="Bongo cat typing animation demo" width="480" />
+</p>
+
 A tiny bongo cat that lives on your desktop (and your partner's phone) and
 starts drumming whenever one of you is typing/coding. It also celebrates
 when an "agent task" finishes. Two apps, one shared "room":
