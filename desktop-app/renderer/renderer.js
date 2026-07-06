@@ -252,7 +252,7 @@ function announceEvent(message, type = 'task_complete') {
 // anything. Cooldown keeps it a poke, not a spam button.
 function sendPoke() {
   if (!db || !state.roomCode) return;
-  youCat.react('poke'); // feedback so it's clear the poke actually sent
+  partnerCat.react('poke'); // feedback on the cat next to the button, not your own
   db.ref(`rooms/${state.roomCode}/events`).push({
     type: 'poke',
     message: `${state.nickname || 'Your partner'} poked you`,
