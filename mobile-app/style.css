@@ -223,7 +223,7 @@ h1 { text-align: center; font-size: 22px; margin-bottom: 4px; }
 /* ---- Duet: both of you typing at the same time ---- */
 .cats-row { position: relative; }
 .cats-row.duet::before {
-  content: "🎶 Duet!";
+  content: "Duet";
   position: absolute;
   top: -4px;
   left: 50%;
@@ -303,6 +303,10 @@ h1 { text-align: center; font-size: 22px; margin-bottom: 4px; }
   font-size: 12px;
   padding: 6px 14px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
+.poke-btn i { font-size: 14px; }
 .poke-btn:active { transform: scale(0.94); }
 .poke-btn:disabled { opacity: 0.35; cursor: not-allowed; }

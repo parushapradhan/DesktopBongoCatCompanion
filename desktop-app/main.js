@@ -16,6 +16,21 @@ let uiohook = null;
 let typingResetTimer = null;
 const TYPING_IDLE_MS = 1800; // how long without a keystroke before "typing" flips back off
 
+// ---- Window view modes ------------------------------------------------------
+// "bar": a slim always-on-top pill (default) -- shows partner status at a
+//   glance and stays out of the way.
+// "full": the full card -- both cats, poke/skins, status line.
+// "ghost": nothing but the cat artwork on a fully transparent background, no
+//   chrome at all -- for people who want it to feel like a sticker on their
+//   desktop rather than an app window. Drag anywhere on the cats to move it;
+//   double-click to cycle modes, or use the tray's View submenu.
+const VIEW_SIZES = {
+  bar: { width: 230, height: 40 },
+  full: { width: 340, height: 300 },
+  ghost: { width: 300, height: 130 },
+};
+let currentViewMode = 'bar';
+
 // Apps that count as "a terminal" for automatic terminal-opened detection.
 // Add your own here if you use something not in this list.
 const TERMINAL_APP_NAMES = [
@@ -46,11 +61,14 @@ function saveSettings(settings) {
 
 function createWindow() {
   const { width } = screen.getPrimaryDisplay().workAreaSize;
+  const saved = loadSettings();
+  currentViewMode = VIEW_SIZES[saved.viewMode] ? saved.viewMode : 'bar';
+  const size = VIEW_SIZES[currentViewMode];
 
   mainWindow = new BrowserWindow({
-    width: 520,
-    height: 300,
-    x: width - 540,
+    width: size.width,
+    height: size.height,
+    x: width - size.width - 20,
     y: 40,
     resizable: false,
     frame: false,
@@ -69,15 +87,30 @@ function createWindow() {
   mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 }
 
-function createTray() {
-  // A tiny generated icon (see assets/tray-icon.png). Falls back to an
-  // empty image if missing so the app never crashes on first run.
-  const iconPath = path.join(__dirname, 'assets', 'tray-icon.png');
-  const icon = fs.existsSync(iconPath) ? nativeImage.createFromPath(iconPath) : nativeImage.createEmpty();
-  tray = new Tray(icon.resize({ width: 16, height: 16 }));
-  tray.setToolTip('Bongo Buddy');
+// Changes both the OS window size and the renderer's own view, and keeps the
+// tray's radio-button state in sync. Persisted so it reopens the same way.
+function setViewMode(mode) {
+  if (!VIEW_SIZES[mode] || !mainWindow || mainWindow.isDestroyed()) return;
+  currentViewMode = mode;
+  const size = VIEW_SIZES[mode];
+  mainWindow.setSize(size.width, size.height, true);
+  mainWindow.webContents.send('set-view-mode', mode);
+  const settings = loadSettings();
+  settings.viewMode = mode;
+  saveSettings(settings);
+  if (tray) tray.setContextMenu(buildTrayMenu());
+}
 
-  const menu = Menu.buildFromTemplate([
+function buildTrayMenu() {
+  return Menu.buildFromTemplate([
+    {
+      label: 'View',
+      submenu: [
+        { label: 'Compact bar', type: 'radio', checked: currentViewMode === 'bar', click: () => setViewMode('bar') },
+        { label: 'Full', type: 'radio', checked: currentViewMode === 'full', click: () => setViewMode('full') },
+        { label: 'Minimal (cat only)', type: 'radio', checked: currentViewMode === 'ghost', click: () => setViewMode('ghost') },
+      ],
+    },
     {
       label: 'Show / Hide',
       click: () => {
@@ -85,22 +118,28 @@ function createTray() {
         mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
       },
     },
+    { type: 'separator' },
     {
-      label: 'Test: task complete',
-      click: () => broadcastTaskComplete('Test notification from the tray menu', 'task_complete'),
-    },
-    {
-      label: 'Test: hit an error',
-      click: () => broadcastTaskComplete('Something broke 💥', 'error'),
-    },
-    {
-      label: 'Test: terminal opened',
-      click: () => broadcastTaskComplete('Terminal opened', 'terminal'),
+      label: 'Developer',
+      submenu: [
+        { label: 'Test: task complete', click: () => broadcastTaskComplete('Test notification from the tray menu', 'task_complete') },
+        { label: 'Test: hit an error', click: () => broadcastTaskComplete('Something broke', 'error') },
+        { label: 'Test: terminal opened', click: () => broadcastTaskComplete('Terminal opened', 'terminal') },
+      ],
     },
     { type: 'separator' },
     { label: 'Quit', click: () => app.quit() },
   ]);
-  tray.setContextMenu(menu);
+}
+
+function createTray() {
+  // A tiny generated icon (see assets/tray-icon.png). Falls back to an
+  // empty image if missing so the app never crashes on first run.
+  const iconPath = path.join(__dirname, 'assets', 'tray-icon.png');
+  const icon = fs.existsSync(iconPath) ? nativeImage.createFromPath(iconPath) : nativeImage.createEmpty();
+  tray = new Tray(icon.resize({ width: 16, height: 16 }));
+  tray.setToolTip('Bongo Buddy');
+  tray.setContextMenu(buildTrayMenu());
   tray.on('click', () => {
     if (!mainWindow) return;
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
@@ -239,6 +278,10 @@ ipcMain.handle('settings:save', (_evt, settings) => {
 });
 ipcMain.handle('window:hide', () => mainWindow && mainWindow.hide());
 ipcMain.handle('window:quit', () => app.quit());
+ipcMain.handle('window:setMode', (_evt, mode) => {
+  setViewMode(mode);
+  return true;
+});
 
 app.whenReady().then(() => {
   createWindow();

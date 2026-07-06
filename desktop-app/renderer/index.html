@@ -3,14 +3,21 @@
 <head>
 <meta charset="UTF-8" />
 <title>Bongo Buddy</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.44.0/dist/tabler-icons.min.css" />
 <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body data-view="bar">
   <div class="app-card" id="app-card">
 
     <!-- ============ PAIRING SCREEN ============ -->
     <div id="pairing-screen" class="screen">
-      <div class="drag-bar">Bongo Buddy 🐾</div>
+      <div class="drag-bar">
+        <span>Bongo Buddy</span>
+        <div class="window-controls">
+          <button id="hide-btn-1" title="Hide to tray"><i class="ti ti-minus" aria-hidden="true"></i></button>
+          <button id="quit-btn-1" class="quit-btn" title="Quit Bongo Buddy"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+      </div>
       <div class="pairing-body">
         <p class="hint">Share a code with your partner to connect:</p>
         <div class="code-row">
@@ -33,9 +40,23 @@
 
     <!-- ============ MAIN BUDDY SCREEN ============ -->
     <div id="main-screen" class="screen hidden">
+
+      <!-- Compact bar: the default view. Slim, glanceable, draggable. -->
+      <div id="bar-pill" class="bar-pill">
+        <i class="ti ti-cat bar-pill-icon" id="bar-pill-icon" aria-hidden="true"></i>
+        <span id="bar-status-text" class="bar-status-text">Waiting for your partner…</span>
+        <button id="bar-expand-btn" title="Expand"><i class="ti ti-chevron-up" aria-hidden="true"></i></button>
+        <button id="bar-quit-btn" class="quit-btn" title="Quit Bongo Buddy"><i class="ti ti-x" aria-hidden="true"></i></button>
+      </div>
+
+      <!-- Full view: both cats, controls, status. -->
       <div class="drag-bar">
         <span id="room-label">Room ------</span>
-        <button id="settings-btn" title="Change room">⚙</button>
+        <div class="window-controls">
+          <button id="settings-btn" title="Change room"><i class="ti ti-settings" aria-hidden="true"></i></button>
+          <button id="collapse-btn" title="Collapse to bar"><i class="ti ti-minus" aria-hidden="true"></i></button>
+          <button id="quit-btn-2" class="quit-btn" title="Quit Bongo Buddy"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
       </div>
 
       <div class="cats-row">
@@ -46,7 +67,7 @@
         <div class="cat-slot">
           <div class="cat-wrap" id="partner-cat"></div>
           <div class="cat-label" id="partner-label">Partner</div>
-          <button id="poke-btn" class="poke-btn" title="Send a poke">👉 Poke</button>
+          <button id="poke-btn" class="poke-btn" title="Send a poke"><i class="ti ti-hand-click" aria-hidden="true"></i> Poke</button>
         </div>
       </div>
 

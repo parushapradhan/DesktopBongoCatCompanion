@@ -106,7 +106,7 @@ function initFirebase() {
 }
 
 function showToast(message) {
-  els.toast.textContent = '🎉 ' + message;
+  els.toast.textContent = message;
   els.toast.classList.remove('hidden');
   setTimeout(() => els.toast.classList.add('hidden'), 3500);
 }
@@ -154,7 +154,7 @@ async function joinRoom(code) {
       updateDuetState();
       const secondsAgo = (Date.now() - (partner.lastActive || 0)) / 1000;
       els.statusLine.textContent = partner.typing
-        ? `${partner.label || 'Partner'} is coding right now ✨`
+        ? `${partner.label || 'Partner'} is coding right now`
         : secondsAgo < 120
         ? `${partner.label || 'Partner'} was just here`
         : `Waiting for ${partner.label || 'your partner'}…`;
@@ -174,15 +174,15 @@ async function joinRoom(code) {
     if (!evt || evt.from === state.deviceId) return;
     if ((evt.ts || 0) < joinedAt - 5000) return;
     if (evt.type === 'error') {
-      showToast(evt.message || `${els.partnerLabel.textContent} hit an error 💥`);
+      showToast(evt.message || `${els.partnerLabel.textContent} hit an error`);
       partnerCat.react('error');
     } else if (evt.type === 'terminal') {
       partnerCat.react('terminal');
     } else if (evt.type === 'poke') {
-      showToast(evt.message || `${els.partnerLabel.textContent} poked you! 👉`);
+      showToast(evt.message || `${els.partnerLabel.textContent} poked you`);
       partnerCat.react('poke');
       if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-        new Notification('Bongo Buddy', { body: evt.message || 'You got poked! 👉' });
+        new Notification('Bongo Buddy', { body: evt.message || 'You got poked' });
       }
     } else {
       showToast(evt.message || 'Task complete');
@@ -242,7 +242,7 @@ function sendPoke() {
   youCat.react('poke'); // feedback so it's clear the poke actually sent
   db.ref(`rooms/${state.roomCode}/events`).push({
     type: 'poke',
-    message: `${state.nickname || 'Your partner'} poked you! 👉`,
+    message: `${state.nickname || 'Your partner'} poked you`,
     from: state.deviceId,
     ts: firebase.database.ServerValue.TIMESTAMP,
   });

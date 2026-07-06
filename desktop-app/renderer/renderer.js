@@ -38,6 +38,13 @@ const els = {
   skinRow: document.getElementById('skin-row'),
   catsRow: document.querySelector('.cats-row'),
   pokeBtn: document.getElementById('poke-btn'),
+  hideBtns: [document.getElementById('hide-btn-1')],
+  quitBtns: [document.getElementById('quit-btn-1'), document.getElementById('quit-btn-2'), document.getElementById('bar-quit-btn')],
+  barPill: document.getElementById('bar-pill'),
+  barPillIcon: document.getElementById('bar-pill-icon'),
+  barStatusText: document.getElementById('bar-status-text'),
+  barExpandBtn: document.getElementById('bar-expand-btn'),
+  collapseBtn: document.getElementById('collapse-btn'),
 };
 
 const POKE_COOLDOWN_MS = 2500; // keep pokes as a light nudge, not a spam button
@@ -52,6 +59,29 @@ let eventsRef = null;
 let localIsTyping = false;
 let partnerIsTyping = false;
 let wasDuet = false;
+
+// ---- View modes: bar (default) / full / ghost ----
+function setViewMode(mode) {
+  document.body.dataset.view = mode;
+  window.buddyAPI.setViewMode(mode);
+}
+window.buddyAPI.onSetViewMode((mode) => {
+  document.body.dataset.view = mode;
+});
+// A quick manual way to cycle modes without hunting for the tray icon --
+// double-click anywhere that isn't a button/input.
+document.body.addEventListener('dblclick', (e) => {
+  if (e.target.closest('button, input')) return;
+  if (els.pairingScreen && !els.pairingScreen.classList.contains('hidden')) return;
+  const order = ['bar', 'full', 'ghost'];
+  const next = order[(order.indexOf(document.body.dataset.view) + 1) % order.length];
+  setViewMode(next);
+});
+
+function updateBarStatus(text, isTyping) {
+  els.barStatusText.textContent = text;
+  els.barPill.classList.toggle('typing', !!isTyping);
+}
 
 function renderSkinRow() {
   els.skinRow.querySelectorAll('.skin-swatch').forEach((btn) => {
@@ -88,7 +118,7 @@ function initFirebase() {
 }
 
 function showToast(message) {
-  els.toast.textContent = '🎉 ' + message;
+  els.toast.textContent = message;
   els.toast.classList.remove('hidden');
   setTimeout(() => els.toast.classList.add('hidden'), 3500);
 }
@@ -135,17 +165,20 @@ async function joinRoom(code, { createIfMissing = true } = {}) {
       partnerIsTyping = !!partner.typing;
       updateDuetState();
       const secondsAgo = (Date.now() - (partner.lastActive || 0)) / 1000;
-      els.statusLine.textContent = partner.typing
-        ? `${partner.label || 'Partner'} is coding right now ✨`
+      const statusText = partner.typing
+        ? `${partner.label || 'Partner'} is coding right now`
         : secondsAgo < 120
         ? `${partner.label || 'Partner'} was just here`
         : `Waiting for ${partner.label || 'your partner'}…`;
+      els.statusLine.textContent = statusText;
+      updateBarStatus(statusText, !!partner.typing);
     } else {
       els.partnerLabel.textContent = 'Partner';
       partnerCat.setTyping(false);
       partnerIsTyping = false;
       updateDuetState();
       els.statusLine.textContent = 'Waiting for your partner to join with this code…';
+      updateBarStatus('Waiting for your partner…', false);
     }
   });
 
@@ -158,15 +191,15 @@ async function joinRoom(code, { createIfMissing = true } = {}) {
     if (!evt || evt.from === state.deviceId) return;
     if ((evt.ts || 0) < joinedAt - 5000) return; // ignore old history on first load
     if (evt.type === 'error') {
-      showToast(evt.message || `${els.partnerLabel.textContent} hit an error 💥`);
+      showToast(evt.message || `${els.partnerLabel.textContent} hit an error`);
       partnerCat.react('error');
     } else if (evt.type === 'terminal') {
       partnerCat.react('terminal');
     } else if (evt.type === 'poke') {
-      showToast(evt.message || `${els.partnerLabel.textContent} poked you! 👉`);
+      showToast(evt.message || `${els.partnerLabel.textContent} poked you`);
       partnerCat.react('poke');
       if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-        new Notification('Bongo Buddy', { body: evt.message || 'You got poked! 👉' });
+        new Notification('Bongo Buddy', { body: evt.message || 'You got poked' });
       }
     } else {
       showToast(evt.message || 'Task complete');
@@ -196,7 +229,7 @@ function setLocalTyping(isTyping, keysPerSec) {
 
 function announceEvent(message, type = 'task_complete') {
   if (type === 'error') {
-    showToast(message || 'Something broke 💥');
+    showToast(message || 'Something broke');
     youCat.react('error');
   } else if (type === 'terminal') {
     youCat.react('terminal');
@@ -222,7 +255,7 @@ function sendPoke() {
   youCat.react('poke'); // feedback so it's clear the poke actually sent
   db.ref(`rooms/${state.roomCode}/events`).push({
     type: 'poke',
-    message: `${state.nickname || 'Your partner'} poked you! 👉`,
+    message: `${state.nickname || 'Your partner'} poked you`,
     from: state.deviceId,
     ts: firebase.database.ServerValue.TIMESTAMP,
   });
@@ -231,6 +264,11 @@ function sendPoke() {
 }
 
 // ---- wire up UI ----
+els.hideBtns.forEach((btn) => btn.addEventListener('click', () => window.buddyAPI.hideWindow()));
+els.quitBtns.forEach((btn) => btn.addEventListener('click', () => window.buddyAPI.quit()));
+els.barExpandBtn.addEventListener('click', () => setViewMode('full'));
+els.collapseBtn.addEventListener('click', () => setViewMode('bar'));
+
 els.pokeBtn.addEventListener('click', sendPoke);
 
 els.newCodeBtn.addEventListener('click', () => {
@@ -287,6 +325,7 @@ if (typeof Notification !== 'undefined' && Notification.permission === 'default'
   state.deviceId = saved.deviceId || uid();
   state.nickname = saved.nickname || '';
   state.skin = saved.skin || 'classic';
+  document.body.dataset.view = saved.viewMode || 'bar';
   els.nicknameInput.value = state.nickname;
   youCat.setSkin(state.skin);
   renderSkinRow();

@@ -6,6 +6,10 @@ contextBridge.exposeInMainWorld('buddyAPI', {
   saveSettings: (settings) => ipcRenderer.invoke('settings:save', settings),
   hideWindow: () => ipcRenderer.invoke('window:hide'),
   quit: () => ipcRenderer.invoke('window:quit'),
+  setViewMode: (mode) => ipcRenderer.invoke('window:setMode', mode),
+  onSetViewMode: (callback) => {
+    ipcRenderer.on('set-view-mode', (_evt, mode) => callback(mode));
+  },
   onLocalTyping: (callback) => {
     ipcRenderer.on('local-typing', (_evt, isTyping, keysPerSec) => callback(isTyping, keysPerSec));
   },

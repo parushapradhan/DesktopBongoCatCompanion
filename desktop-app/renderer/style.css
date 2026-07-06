@@ -18,6 +18,7 @@ html, body {
   flex-direction: column;
   box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   border: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
 .screen { display: flex; flex-direction: column; height: 100%; }
@@ -42,6 +43,20 @@ html, body {
   cursor: pointer;
   font-size: 14px;
 }
+
+.window-controls { display: flex; align-items: center; gap: 2px; -webkit-app-region: no-drag; }
+.window-controls button {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 13px;
+}
+.window-controls button:hover { background: rgba(255,255,255,0.1); }
+.window-controls .quit-btn:hover { background: #e0504f; color: #fff; }
 
 .pairing-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
 
@@ -109,8 +124,69 @@ html, body {
   margin: 2px 0;
 }
 
-.cats-row {
+/* ---------------- View modes: bar / full / ghost ---------------- */
+/* "bar": slim pill, default. "full": everything. "ghost": cats only, no
+   chrome, transparent background -- see main.js VIEW_SIZES for the matching
+   OS window dimensions. */
+
+#bar-pill { display: none; }
+#main-screen .drag-bar,
+#main-screen .cats-row,
+#main-screen #status-line,
+#main-screen #skin-row { display: none; }
+
+body[data-view="bar"] #bar-pill { display: flex; }
+
+body[data-view="full"] #main-screen .drag-bar { display: flex; }
+body[data-view="full"] #main-screen .cats-row { display: flex; }
+body[data-view="full"] #main-screen #status-line { display: block; }
+body[data-view="full"] #main-screen #skin-row { display: flex; }
+
+body[data-view="ghost"] #main-screen .cats-row { display: flex; }
+body[data-view="ghost"] .cat-label,
+body[data-view="ghost"] .poke-btn { display: none; }
+body[data-view="ghost"] .app-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+body[data-view="ghost"] .cats-row { -webkit-app-region: drag; }
+
+.bar-pill {
+  -webkit-app-region: drag;
+  height: 100%;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 0 12px;
+  font-size: 12px;
+}
+.bar-pill-icon { font-size: 16px; opacity: 0.85; flex-shrink: 0; }
+.bar-status-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bar-pill button {
+  -webkit-app-region: no-drag;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.bar-pill button:hover { background: rgba(255,255,255,0.1); }
+.bar-pill .quit-btn:hover { background: #e0504f; color: #fff; }
+.bar-pill.typing .bar-pill-icon { opacity: 1; color: #f2b13c; }
+
+.cats-row {
   justify-content: space-around;
   align-items: center;
   flex: 1;
@@ -241,7 +317,7 @@ html, body {
 /* ---- Duet: both of you typing at the same time ---- */
 .cats-row { position: relative; }
 .cats-row.duet::before {
-  content: "🎶 Duet!";
+  content: "Duet";
   position: absolute;
   top: -14px;
   left: 50%;
@@ -257,7 +333,7 @@ html, body {
   50% { opacity: 1; }
 }
 
-/* ---- Unlockable skins ---- */
+/* ---- Cat skins ---- */
 /* "classic" uses the :root defaults above -- no override needed. */
 .bongo-cat-scene[data-skin="midnight"] {
   --cat-orange: #c7cbd1;
@@ -290,7 +366,6 @@ html, body {
 
 /* ---- Skin picker ---- */
 .skin-row {
-  display: flex;
   justify-content: center;
   gap: 8px;
   padding: 4px 8px 8px;
@@ -325,6 +400,10 @@ html, body {
   font-size: 10px;
   padding: 3px 9px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
+.poke-btn i { font-size: 12px; }
 .poke-btn:active { transform: scale(0.94); }
 .poke-btn:disabled { opacity: 0.35; cursor: not-allowed; }

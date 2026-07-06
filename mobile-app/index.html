@@ -10,6 +10,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
 <link rel="manifest" href="manifest.json" />
 <title>Bongo Buddy</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.44.0/dist/tabler-icons.min.css" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,7 +18,7 @@
 
     <!-- ============ PAIRING SCREEN ============ -->
     <div id="pairing-screen" class="screen">
-      <h1>Bongo Buddy 🐾</h1>
+      <h1>Bongo Buddy</h1>
       <p class="hint">Share this code with your partner:</p>
       <div class="code-row">
         <span id="my-code" class="code-display">------</span>
@@ -40,14 +41,14 @@
     <div id="main-screen" class="screen hidden">
       <div class="top-bar">
         <span id="room-label">Room ------</span>
-        <button id="settings-btn">⚙</button>
+        <button id="settings-btn"><i class="ti ti-settings" aria-hidden="true"></i></button>
       </div>
 
       <div class="cats-row">
         <div class="cat-slot">
           <div class="cat-wrap" id="partner-cat"></div>
           <div class="cat-label" id="partner-label">Partner</div>
-          <button id="poke-btn" class="poke-btn" title="Send a poke">👉 Poke</button>
+          <button id="poke-btn" class="poke-btn" title="Send a poke"><i class="ti ti-hand-click" aria-hidden="true"></i> Poke</button>
         </div>
       </div>
 
