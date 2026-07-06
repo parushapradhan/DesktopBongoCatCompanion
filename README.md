@@ -244,9 +244,10 @@ use, since it hooks the shell itself rather than watching a window.
   notarized, so macOS/Windows show a one-time "unknown developer" warning.
   Fine for sharing between two people; a paid developer account would remove
   the warning if this ever goes wider.
-- **App icon is low-res (256×256)** — fine for a personal build, but if you
-  want a crisper Dock/taskbar icon later, swap in a 1024×1024 PNG at
-  `desktop-app/assets/app-icon.png` before running `npm run dist:*`.
+- **App icon** is the bongo cat artwork itself (`desktop-app/assets/app-icon.png`,
+  1024×1024) rendered on a dark background so it reads as a real Dock/taskbar
+  icon. Swap that file for anything else you'd rather use before running
+  `npm run dist:*`.
 - **Automatic terminal detection is macOS-only** — Windows/Linux support
   would need a different frontmost-window check per platform.
 
