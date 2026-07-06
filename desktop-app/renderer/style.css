@@ -145,7 +145,10 @@ body[data-view="full"] #main-screen #skin-row { display: flex; }
 body[data-view="ghost"] #main-screen .cats-row { display: flex; }
 body[data-view="ghost"] .cat-label,
 body[data-view="ghost"] .poke-btn { display: none; }
-body[data-view="ghost"] .app-card {
+/* Only strip the card chrome once you're actually paired and on the main
+   screen -- otherwise selecting "Minimal (cat only)" before pairing just
+   makes the pairing card see-through with nothing else to show. */
+body[data-view="ghost"] .app-card:has(#main-screen:not(.hidden)) {
   background: transparent;
   border: none;
   box-shadow: none;

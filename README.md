@@ -85,9 +85,52 @@ Settings > Privacy & Security > Accessibility**, then enable the app (or
 your terminal, if running via `npm start`). Without this, the cat will still
 work, it just won't react to typing outside its own window.
 
-To make it launch automatically and not need a terminal every time, package
-it with `electron-builder` (not included here, but a one-line addition if
-you want a real installer later).
+To send this to your partner as a real app they can just double-click (no
+terminal, no Node install), see **"Packaging it for your partner"** below.
+
+## Packaging it for your partner
+
+You don't need to hand your boyfriend this whole repo and make him run
+`npm install`. `electron-builder` is already wired up to produce a real,
+double-clickable app.
+
+**On your machine (build for whichever OS *he* uses):**
+
+```bash
+cd desktop-app
+npm install
+
+# copy your real Firebase config into the build first (see step 1) —
+# renderer/firebase-config.js must exist and have your real project's keys
+
+npm run dist:mac    # → dist/Bongo Buddy-1.0.0.dmg   (for a Mac)
+npm run dist:win    # → dist/Bongo Buddy Setup.exe   (for Windows)
+npm run dist:linux  # → dist/Bongo Buddy.AppImage    (for Linux)
+```
+
+Send him the file in `desktop-app/dist/` (AirDrop, Drive, email — whatever's
+easiest; it's usually 80-150MB since Electron bundles Chromium).
+
+**Important:** the app you send him must be paired to the *same* Firebase
+project as yours, since that's how your two cats find each other. That means
+your real `renderer/firebase-config.js` (not the `.example.js` placeholder)
+needs to exist before you run `npm run dist:*` — it gets bundled into the
+app automatically. You only need one shared Firebase project between the
+two of you, not one each.
+
+**What he has to do:** open the file. On a Mac, since this isn't
+notarized/signed with a paid Apple Developer account ($99/year — overkill
+for a two-person app), Gatekeeper will say it's from an "unidentified
+developer." He right-clicks the app > **Open** > **Open** once, and it'll
+launch normally every time after that. Windows may show a similar
+SmartScreen warning ("more info" > "run anyway").
+
+**Quicker, rougher alternative:** if you'd rather skip building an
+installer, just zip the whole `bongo-buddy` folder (including your real
+`firebase-config.js` files) and send that — he unzips it and runs
+`npm install && npm start` from `desktop-app/`, same as you did. Works fine,
+just needs Node.js installed on his end and a terminal command instead of a
+double-click.
 
 ## 3. Set up the mobile app
 
@@ -196,8 +239,14 @@ use, since it hooks the shell itself rather than watching a window.
 - **The local webhook only reaches the desktop machine it runs on.** If you
   want a remote CI pipeline to trigger it, you'd point the webhook call at
   the Firebase `events` node directly instead of localhost.
-- **No packaged installer yet** — running via `npm start` is fine for
-  personal use; `electron-builder` can produce a real `.app`/`.exe` later.
+- **Unsigned installer** — `electron-builder` produces a real `.dmg`/`.exe`
+  (see "Packaging it for your partner"), but it isn't code-signed or
+  notarized, so macOS/Windows show a one-time "unknown developer" warning.
+  Fine for sharing between two people; a paid developer account would remove
+  the warning if this ever goes wider.
+- **App icon is low-res (256×256)** — fine for a personal build, but if you
+  want a crisper Dock/taskbar icon later, swap in a 1024×1024 PNG at
+  `desktop-app/assets/app-icon.png` before running `npm run dist:*`.
 - **Automatic terminal detection is macOS-only** — Windows/Linux support
   would need a different frontmost-window check per platform.
 
