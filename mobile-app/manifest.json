@@ -1,0 +1,14 @@
+{
+  "name": "Bongo Buddy",
+  "short_name": "BongoBuddy",
+  "description": "A tiny bongo cat that lets you see when your partner is coding.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1e182a",
+  "theme_color": "#1e182a",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

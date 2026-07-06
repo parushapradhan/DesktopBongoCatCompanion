@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check JS syntax (desktop-app)
+        run: |
+          find desktop-app -name "*.js" -not -path "*/node_modules/*" -print0 \
+            | xargs -0 -n1 node --check
+
+      - name: Check JS syntax (mobile-app)
+        run: |
+          find mobile-app -name "*.js" -not -path "*/node_modules/*" -print0 \
+            | xargs -0 -n1 node --check
+
+      - name: Validate JSON files
+        run: |
+          find . -name "*.json" -not -path "*/node_modules/*" -print0 \
+            | xargs -0 -n1 node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" --
+
+      - name: Confirm no real Firebase config is committed
+        run: |
+          if git ls-files | grep -E "firebase-config\.js$" | grep -v "\.example\.js$"; then
+            echo "::error::A real firebase-config.js is tracked by git -- it should be gitignored. Only firebase-config.example.js should be committed."
+            exit 1
+          fi
+          echo "OK: no tracked firebase-config.js files."

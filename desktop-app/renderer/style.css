@@ -1,0 +1,330 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+
+.app-card {
+  background: rgba(30, 24, 42, 0.92);
+  border-radius: 16px;
+  height: 100%;
+  color: #fdf6ec;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.screen { display: flex; flex-direction: column; height: 100%; }
+.screen.hidden { display: none; }
+
+.drag-bar {
+  -webkit-app-region: drag;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.drag-bar button {
+  -webkit-app-region: no-drag;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.pairing-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+
+.hint { margin: 4px 0 0; font-size: 12px; opacity: 0.8; }
+
+.code-row { display: flex; gap: 6px; }
+
+.code-display {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: 'SF Mono', Menlo, monospace;
+  font-size: 18px;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+.code-row input {
+  flex: 1;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: inherit;
+  padding: 8px 10px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.code-row button, .nickname-input {
+  border-radius: 8px;
+  border: none;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.code-row button {
+  background: #f2b13c;
+  color: #241a0d;
+  font-weight: 600;
+}
+
+.nickname-input {
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: inherit;
+  padding: 8px 10px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #f2b13c;
+  font-size: 12px;
+  cursor: pointer;
+  align-self: flex-start;
+  padding: 0;
+}
+
+.divider {
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.5;
+  margin: 2px 0;
+}
+
+.cats-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex: 1;
+  padding: 6px 10px 0;
+  gap: 8px;
+}
+
+.cat-slot { display: flex; flex-direction: column; align-items: center; width: 48%; }
+
+.cat-label {
+  font-size: 11px;
+  margin-top: 2px;
+  opacity: 0.85;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-line {
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.7;
+  padding: 4px 8px 10px;
+}
+
+.toast {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  background: #f2b13c;
+  color: #241a0d;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+.toast.hidden { display: none; }
+
+/* ---------------- Bongo cat scene (SVG) ---------------- */
+/* Artwork/animation adapted from https://codepen.io/abeatrize/pen/LJqYey
+   (Bongo Cat by @StrayRogue & @DitzyFlama) */
+
+:root {
+  --cat-bg: transparent;
+  --cat-green: #a5ea9b;
+  --cat-pink: #ff61d8;
+  --cat-blue: #569cfa;
+  --cat-orange: #ffcc81;
+  --cat-cyan: #7ed1e2;
+}
+
+.cat-wrap { width: 100%; }
+
+.bongo-cat-scene {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+  fill: var(--cat-bg);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+  transition: opacity 0.3s, filter 0.3s;
+}
+
+.bongo-cat-scene .laptop-cover,
+.bongo-cat-scene .headphone .band { fill: none; }
+.bongo-cat-scene .paw, .bongo-cat-scene .head { stroke: var(--cat-orange); }
+.bongo-cat-scene .laptop-keyboard { stroke-width: 2; }
+.bongo-cat-scene .terminal-code { stroke-width: 5; }
+.bongo-cat-scene .music .note,
+.bongo-cat-scene .laptop-base,
+.bongo-cat-scene .laptop-cover,
+.bongo-cat-scene .paw .pads { stroke: var(--cat-pink); }
+.bongo-cat-scene .table line,
+.bongo-cat-scene .headphone .band,
+.bongo-cat-scene .headphone .speaker path:nth-child(3) { stroke: var(--cat-green); }
+.bongo-cat-scene .terminal-frame,
+.bongo-cat-scene .laptop-keyboard,
+.bongo-cat-scene .headphone .speaker path:nth-child(2) { stroke: var(--cat-blue); }
+.bongo-cat-scene .terminal-code,
+.bongo-cat-scene .headphone .speaker path:first-child { stroke: var(--cat-cyan); }
+
+.bongo-cat-scene.idle { opacity: 0.6; filter: grayscale(35%); }
+
+.bongo-cat-scene.celebrate {
+  animation: cat-jump 0.5s ease-in-out 3;
+}
+@keyframes cat-jump {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-10px) scale(1.04); }
+}
+
+/* ---- Reactions: one-off events besides the continuous typing state ---- */
+.bongo-cat-scene.reaction-error {
+  animation: cat-shake 0.15s ease-in-out 4;
+  filter: drop-shadow(0 0 6px #ff4d4d);
+}
+@keyframes cat-shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-6px) rotate(-2deg); }
+  75% { transform: translateX(6px) rotate(2deg); }
+}
+
+.bongo-cat-scene.reaction-terminal {
+  animation: cat-perk 0.35s ease-out 1;
+}
+@keyframes cat-perk {
+  0% { transform: scale(1); filter: brightness(1); }
+  40% { transform: scale(1.06); filter: brightness(1.3); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+.bongo-cat-scene.reaction-poke {
+  animation: cat-wave 0.65s ease-in-out 1;
+}
+@keyframes cat-wave {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  20% { transform: rotate(-8deg) scale(1.05); }
+  40% { transform: rotate(6deg) scale(1.05); }
+  60% { transform: rotate(-4deg) scale(1.02); }
+  80% { transform: rotate(2deg) scale(1.01); }
+}
+
+/* ---- Duet: both of you typing at the same time ---- */
+.cats-row { position: relative; }
+.cats-row.duet::before {
+  content: "🎶 Duet!";
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  color: #f2b13c;
+  animation: duet-pulse 1s ease-in-out infinite;
+}
+.bongo-cat-scene.duet { filter: drop-shadow(0 0 10px rgba(242, 177, 60, 0.7)); }
+@keyframes duet-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+/* ---- Unlockable skins ---- */
+/* "classic" uses the :root defaults above -- no override needed. */
+.bongo-cat-scene[data-skin="midnight"] {
+  --cat-orange: #c7cbd1;
+  --cat-pink: #8a8fff;
+  --cat-blue: #5865f2;
+  --cat-green: #57f2c1;
+  --cat-cyan: #a0e7ff;
+}
+.bongo-cat-scene[data-skin="sunset"] {
+  --cat-orange: #ff8a5c;
+  --cat-pink: #ff5c8a;
+  --cat-blue: #ffb85c;
+  --cat-green: #ff6f5c;
+  --cat-cyan: #ffd25c;
+}
+.bongo-cat-scene[data-skin="golden"] {
+  --cat-orange: #ffd700;
+  --cat-pink: #ffe066;
+  --cat-blue: #fff2b0;
+  --cat-green: #ffcf40;
+  --cat-cyan: #fff59d;
+}
+
+.bongo-cat-scene .accessory { display: none; }
+.bongo-cat-scene[data-skin="sunset"] .accessory-bandana { display: block; }
+.bongo-cat-scene[data-skin="golden"] .accessory-partyhat { display: block; }
+.accessory-partyhat polygon,
+.accessory-partyhat circle { fill: #ff4d94; stroke: #ffffff; stroke-width: 3; }
+.accessory-bandana polygon { fill: #4da6ff; stroke: #ffffff; stroke-width: 3; }
+
+/* ---- Skin picker ---- */
+.skin-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 8px 8px;
+}
+
+.skin-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  padding: 0;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.skin-swatch[data-skin="classic"] { background: #ffcc81; }
+.skin-swatch[data-skin="midnight"] { background: #3a3f4b; }
+.skin-swatch[data-skin="sunset"] { background: linear-gradient(135deg, #ff8a5c, #ff5c8a); }
+.skin-swatch[data-skin="golden"] { background: linear-gradient(135deg, #ffd700, #fff2b0); }
+
+.skin-swatch.selected { border-color: #f2b13c; }
+
+/* ---- Poke button ---- */
+.poke-btn {
+  margin-top: 4px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.12);
+  color: inherit;
+  font-size: 10px;
+  padding: 3px 9px;
+  cursor: pointer;
+}
+.poke-btn:active { transform: scale(0.94); }
+.poke-btn:disabled { opacity: 0.35; cursor: not-allowed; }

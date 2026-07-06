@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Personal Firebase credentials -- never commit these.
+# Everyone copies firebase-config.example.js -> firebase-config.js locally.
+desktop-app/renderer/firebase-config.js
+mobile-app/firebase-config.js
+
+# Electron build output
+desktop-app/dist/
+desktop-app/out/
+desktop-app/build/
+
+# Logs
+npm-debug.log*
+*.log
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Env files, just in case
+.env
+.env.*
