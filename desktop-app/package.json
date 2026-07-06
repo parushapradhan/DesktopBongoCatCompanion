@@ -47,6 +47,9 @@
     "directories": {
       "output": "dist"
     },
+    "asarUnpack": [
+      "**/node_modules/uiohook-napi/**"
+    ],
     "mac": {
       "category": "public.app-category.productivity",
       "icon": "assets/app-icon.png",

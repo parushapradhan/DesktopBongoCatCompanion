@@ -125,6 +125,13 @@ developer." He right-clicks the app > **Open** > **Open** once, and it'll
 launch normally every time after that. Windows may show a similar
 SmartScreen warning ("more info" > "run anyway").
 
+Then, same as the dev version: **System Settings > Privacy & Security >
+Accessibility**, enable "Bongo Buddy" so it can see keystrokes made in other
+apps. This is a separate grant from the one you gave the dev build (macOS
+treats the packaged app as a different app), so it's easy to miss on first
+launch — without it, the window still opens and pairs fine, it just won't
+react to typing outside its own window.
+
 **Quicker, rougher alternative:** if you'd rather skip building an
 installer, just zip the whole `bongo-buddy` folder (including your real
 `firebase-config.js` files) and send that — he unzips it and runs
